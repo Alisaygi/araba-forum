@@ -1,0 +1,102 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ title }} - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ title }}</h1>
+    <div>
+        {% if user.is_authenticated %}
+            {% if request.GET.my_cars %}
+            <a href="{% url 'car_list' %}" class="btn btn-secondary me-2">
+                <i class="fas fa-list"></i> Tüm Arabaları Göster
+            </a>
+            {% else %}
+            <a href="{% url 'car_list' %}?my_cars=true" class="btn btn-secondary me-2">
+                <i class="fas fa-user"></i> Arabalarımı Göster
+            </a>
+            {% endif %}
+            <a href="{% url 'car_statistics' %}" class="btn btn-info me-2">
+                <i class="fas fa-chart-bar"></i> İstatistikler
+            </a>
+            <a href="{% url 'add_car' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Araba Ekle
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Arama Formu -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-car"></i></span>
+                    <input type="text" class="form-control" name="brand" placeholder="Marka ara..." value="{{ request.GET.brand }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-car-side"></i></span>
+                    <input type="text" class="form-control" name="model" placeholder="Model ara..." value="{{ request.GET.model }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Ara
+                </button>
+                {% if request.GET.brand or request.GET.model %}
+                    <a href="{% url 'car_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Filtreyi Temizle
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {% if cars %}
+        {% for car in cars %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.brand }} {{ car.model }} ({{ car.year }})</h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-user"></i> {{ car.owner.username }}<br>
+                            <i class="fas fa-gas-pump"></i> {{ car.get_fuel_type_display }}<br>
+                            <i class="fas fa-road"></i> {{ car.mileage }} km<br>
+                            <i class="fas fa-tachometer-alt"></i> {{ car.fuel_consumption }} Lt/100km
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-grid">
+                        <a href="{% url 'car_detail' car.pk %}" class="btn btn-primary">
+                            <i class="fas fa-info-circle"></i> Detaylar ve Yorumlar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col">
+            <div class="alert alert-info">
+                {% if request.GET.brand or request.GET.model %}
+                    Arama kriterlerinize uygun araç bulunamadı.
+                {% elif request.GET.my_cars %}
+                    Henüz araba eklememişsiniz.
+                {% else %}
+                    Henüz hiç araba eklenmemiş.
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

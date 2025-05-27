@@ -1,0 +1,58 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Ana Sayfa - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Haberler Bölümü -->
+    <div class="col-md-8">
+        <h2 class="mb-4">Son Haberler</h2>
+        {% if news %}
+            {% for news_item in news %}
+            <div class="card mb-4">
+                {% if news_item.image %}
+                <img src="{{ news_item.image.url }}" class="card-img-top" alt="{{ news_item.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ news_item.title }}</h5>
+                    <p class="card-text">{{ news_item.content|truncatewords:50 }}</p>
+                    <p class="text-muted">
+                        <small>{{ news_item.date_posted|date:"d F Y" }} - {{ news_item.author.username }}</small>
+                    </p>
+                    <a href="{% url 'news_detail' news_item.pk %}" class="btn btn-primary">Devamını Oku</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Henüz haber bulunmuyor.</p>
+        {% endif %}
+    </div>
+
+    <!-- Son Eklenen Arabalar -->
+    <div class="col-md-4">
+        <h2 class="mb-4">Son Eklenen Arabalar</h2>
+        {% if latest_cars %}
+            {% for car in latest_cars %}
+            <div class="card mb-3">
+                {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ car.brand }} {{ car.model }} ({{ car.year }})</h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-gas-pump"></i> {{ car.get_fuel_type_display }}<br>
+                            <i class="fas fa-road"></i> {{ car.mileage }} km<br>
+                            <i class="fas fa-tachometer-alt"></i> {{ car.fuel_consumption }} Lt/100km
+                        </small>
+                    </p>
+                    <a href="{% url 'car_detail' car.pk %}" class="btn btn-outline-primary btn-sm">Detaylar</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Henüz araç eklenmemiş.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

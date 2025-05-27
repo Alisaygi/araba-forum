@@ -1,0 +1,85 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Araç İstatistikleri - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Araç İstatistikleri</h1>
+
+    <!-- Yakıt Tüketimi İstatistikleri -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Yakıt Tüketimi Analizi</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Yakıt Tipi</th>
+                            <th>Ortalama Tüketim (Lt/100km)</th>
+                            <th>En Düşük Tüketim</th>
+                            <th>En Yüksek Tüketim</th>
+                            <th>Araç Sayısı</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in fuel_stats %}
+                        <tr>
+                            <td>{{ stat.fuel_type_display }}</td>
+                            <td>{{ stat.avg_consumption|floatformat:1 }}</td>
+                            <td>{{ stat.min_consumption|floatformat:1 }} ({{ stat.min_car_brand }} {{ stat.min_car_model }})</td>
+                            <td>{{ stat.max_consumption|floatformat:1 }} ({{ stat.max_car_brand }} {{ stat.max_car_model }})</td>
+                            <td>{{ stat.count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- En Ekonomik Araçlar -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>En Ekonomik 5 Araç</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Marka Model</th>
+                            <th>Yakıt Tipi</th>
+                            <th>Tüketim (Lt/100km)</th>
+                            <th>Sahibi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for car in most_economic_cars %}
+                        <tr>
+                            <td>{{ car.brand }} {{ car.model }} ({{ car.year }})</td>
+                            <td>{{ car.get_fuel_type_display }}</td>
+                            <td>{{ car.fuel_consumption }}</td>
+                            <td>{{ car.owner.username }}</td>
+                            <td>
+                                <a href="{% url 'car_detail' car.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-info-circle"></i> Detaylar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'car_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Arabalara Dön
+        </a>
+    </div>
+</div>
+{% endblock %} 

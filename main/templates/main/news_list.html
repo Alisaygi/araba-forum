@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Haberler - Araba Forumu{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Otomobil Haberleri</h1>
+
+<div class="row">
+    {% if news %}
+        {% for news_item in news %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                {% if news_item.image %}
+                <img src="{{ news_item.image.url }}" class="card-img-top" alt="{{ news_item.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ news_item.title }}</h5>
+                    <p class="card-text">{{ news_item.content|truncatewords:30 }}</p>
+                    <p class="text-muted">
+                        <small>{{ news_item.date_posted|date:"d F Y" }} - {{ news_item.author.username }}</small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'news_detail' news_item.pk %}" class="btn btn-primary">Devamını Oku</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col">
+            <p>Henüz haber bulunmuyor.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

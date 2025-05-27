@@ -1,0 +1,40 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Haberlerim - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Haberlerim</h2>
+    
+    {% if news %}
+    <div class="row">
+        {% for item in news %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.content|truncatewords:30 }}</p>
+                    <p class="text-muted">{{ item.date_posted|date:"d F Y" }}</p>
+                    <div class="btn-group">
+                        <a href="{% url 'edit_news' item.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </a>
+                        <a href="{% url 'delete_news' item.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Sil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        Henüz hiç haber paylaşmamışsınız.
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

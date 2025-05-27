@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Haber Düzenle - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Haber Düzenle</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Başlık</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ news.title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">İçerik</label>
+                        <textarea class="form-control" id="content" name="content" rows="6" required>{{ news.content }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Görsel</label>
+                        {% if news.image %}
+                        <div class="mb-2">
+                            <img src="{{ news.image.url }}" alt="{{ news.title }}" class="img-thumbnail" style="max-height: 200px;">
+                        </div>
+                        {% endif %}
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <small class="text-muted">Yeni bir görsel seçmezseniz mevcut görsel korunacaktır.</small>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <a href="{% url 'my_news' %}" class="btn btn-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

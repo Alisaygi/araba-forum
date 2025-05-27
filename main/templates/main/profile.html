@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ profile_user.username }}'in Profili - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Profil Bilgileri</h3>
+                </div>
+                <div class="card-body">
+                    <h4>{{ profile_user.username }}</h4>
+                    {% if profile_user.first_name or profile_user.last_name %}
+                    <p>{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+                    {% endif %}
+                    <p>{{ profile_user.email }}</p>
+                    
+                    {% if user == profile_user %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'change_password' %}" class="btn btn-primary">
+                            <i class="fas fa-key"></i> Şifre Değiştir
+                        </a>
+                        <a href="{% url 'car_list' %}?my_cars=true" class="btn btn-info">
+                            <i class="fas fa-car"></i> Arabalarımı Yönet
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            {% if user_cars %}
+            <h3>Araçları</h3>
+            <div class="row">
+                {% for car in user_cars %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        {% if car.image %}
+                        <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ car.brand }} {{ car.model }}</h5>
+                            <p class="card-text">
+                                <strong>Yıl:</strong> {{ car.year }}<br>
+                                <strong>Yakıt:</strong> {{ car.get_fuel_type_display }}<br>
+                                <strong>Kilometre:</strong> {{ car.mileage }} km
+                            </p>
+                            <a href="{% url 'car_detail' car.pk %}" class="btn btn-primary">Detaylar</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">Henüz araç eklenmemiş.</div>
+            {% endif %}
+
+            {% if news_posts %}
+            <h3 class="mt-4">Paylaştığı Haberler</h3>
+            <div class="row">
+                {% for news in news_posts %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        {% if news.image %}
+                        <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ news.title }}</h5>
+                            <p class="card-text">{{ news.content|truncatewords:30 }}</p>
+                            <p class="text-muted">{{ news.date_posted|date:"d F Y" }}</p>
+                            <a href="{% url 'news_detail' news.pk %}" class="btn btn-primary">Devamını Oku</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

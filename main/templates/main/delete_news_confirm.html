@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Haber Sil - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2>Haber Sil</h2>
+            </div>
+            <div class="card-body">
+                <p class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    "{{ news.title }}" başlıklı haberi silmek istediğinizden emin misiniz?
+                </p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Evet, Sil
+                        </button>
+                        <a href="{% url 'my_news' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

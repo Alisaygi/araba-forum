@@ -1,0 +1,110 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ car.brand }} {{ car.model }} - Araba Forumu{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            {% if car.image %}
+            <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.brand }} {{ car.model }}">
+            {% endif %}
+            <div class="card-body">
+                <h1 class="card-title">{{ car.brand }} {{ car.model }} ({{ car.year }})</h1>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Araç Bilgileri</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-user"></i> Sahibi: {{ car.owner.username }}</li>
+                            <li><i class="fas fa-gas-pump"></i> Yakıt Tipi: {{ car.get_fuel_type_display }}</li>
+                            <li><i class="fas fa-road"></i> Kilometre: {{ car.mileage }} km</li>
+                            <li><i class="fas fa-tachometer-alt"></i> Yakıt Tüketimi: {{ car.fuel_consumption }} Lt/100km</li>
+                            <li><i class="fas fa-calendar"></i> Eklenme Tarihi: {{ car.date_posted|date:"d F Y" }}</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                {% if user == car.owner %}
+                <div class="mt-4">
+                    <a href="{% url 'edit_car' car.pk %}" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </a>
+                    <a href="{% url 'delete_car' car.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Sil
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Yorumlar Bölümü -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Kullanıcı Yorumları</h3>
+            </div>
+            <div class="card-body">
+                {% if reviews %}
+                    {% for review in reviews %}
+                    <div class="mb-4 pb-3 border-bottom">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5>{{ review.user.username }} tarafından yapılan yorum</h5>
+                            {% if user == review.user %}
+                            <div>
+                                <a href="{% url 'edit_review' review.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i> Düzenle
+                                </a>
+                                <a href="{% url 'delete_review' review.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Sil
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-success">Beğenilen Yönler:</h6>
+                            <p>{{ review.pros|linebreaks }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <h6 class="text-danger">Beğenilmeyen Yönler:</h6>
+                            <p>{{ review.cons|linebreaks }}</p>
+                        </div>
+                        <div>
+                            <h6 class="text-warning">Kronik Sorunlar:</h6>
+                            <p>{{ review.common_issues|linebreaks }}</p>
+                        </div>
+                        <small class="text-muted">{{ review.date_posted|date:"d F Y" }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Henüz yorum yapılmamış.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Yorum Ekleme Formu -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Yorum Ekle</h4>
+            </div>
+            <div class="card-body">
+                {% if user.is_authenticated %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ review_form.as_p }}
+                        <button type="submit" class="btn btn-primary">Yorum Yap</button>
+                    </form>
+                {% else %}
+                    <p>Yorum yapabilmek için <a href="{% url 'login' %}">giriş yapmalısınız</a>.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'car_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Arabalara Dön
+    </a>
+</div>
+{% endblock %} 
