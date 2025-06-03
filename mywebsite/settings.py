@@ -25,7 +25,7 @@ ON_RENDER = os.environ.get('RENDER', None) is not None
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--+-l$4#ngyak-^^%1sru+#+5lmj@e$r#v!bo!m0aul7-zmc70#')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not ON_RENDER
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if ON_RENDER:
